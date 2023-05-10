@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
 
@@ -15,10 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        if: github.event.pull_request.merged == true
         with:
           ref: ${{ github.sha }}
           fetch-depth: '0'
       - name: Tag
+        if: github.event.pull_request.merged == true
         uses: anothrNick/github-tag-action@1.62.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
