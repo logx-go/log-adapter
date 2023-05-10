@@ -5,7 +5,7 @@ Unified logging with Golang
 ## Install
 
 ```shell
-go get -u github.com/logx-go/logadapter
+go get -u github.com/logx-go/log-adapter
 ```
 
 ## Development
