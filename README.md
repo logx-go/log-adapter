@@ -1,6 +1,6 @@
 # LogX - Log Adapter
 
-Unified logging with Golang
+Adapter to wrap loggers from Golang log package (https://pkg.go.dev/log)
 
 ## Install
 
