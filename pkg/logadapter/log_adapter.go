@@ -60,6 +60,10 @@ func (s *LogAdapter) format(v ...any) (messageF string, fieldsF map[string]any) 
 		fields[fieldName] = fieldValue
 	}
 
+	if s.formatter == nil {
+		return msg, s.fields
+	}
+
 	return s.formatter.Format(msg, fields)
 }
 
