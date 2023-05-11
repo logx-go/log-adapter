@@ -29,7 +29,7 @@ type LogAdapter struct {
 func (s *LogAdapter) clone() *LogAdapter {
 	return &LogAdapter{
 		logger:    s.logger,
-		fields:    s.fields,
+		fields:    commons.CloneFieldMap(s.fields),
 		formatter: s.formatter,
 	}
 }
