@@ -34,10 +34,10 @@ func (s *LogAdapter) clone() *LogAdapter {
 	}
 }
 
-func (s *LogAdapter) format(v ...any) (messageF string, fieldsF map[string]any) {
+func (s *LogAdapter) format(v ...any) string {
 	if len(v) < 1 {
 		if s.formatter == nil {
-			return "", s.fields
+			return ""
 		}
 
 		return s.formatter.Format("", s.fields)
@@ -61,7 +61,7 @@ func (s *LogAdapter) format(v ...any) (messageF string, fieldsF map[string]any) 
 	}
 
 	if s.formatter == nil {
-		return msg, s.fields
+		return msg
 	}
 
 	return s.formatter.Format(msg, fields)
