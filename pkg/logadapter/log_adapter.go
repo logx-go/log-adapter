@@ -19,7 +19,7 @@ func New(logger logx.Log) logx.Adapter {
 	}
 }
 
-// LogAdapter implementation to wrap a log Logger
+// LogAdapter implementation to wrap a format Logger
 type LogAdapter struct {
 	logger    logx.Log
 	formatter logx.Formatter
@@ -34,13 +34,13 @@ func (s *LogAdapter) clone() *LogAdapter {
 	}
 }
 
-func (s *LogAdapter) log(v ...any) any {
-	if s.formatter == nil {
-		return v
-	}
-
+func (s *LogAdapter) format(v ...any) (messageF string, fieldsF map[string]any) {
 	if len(v) < 1 {
-		return s.formatter.Format(nil, nil)
+		if s.formatter == nil {
+			return "", s.fields
+		}
+
+		return s.formatter.Format("", s.fields)
 	}
 
 	msg := fmt.Sprintf(`%v`, v[0])
@@ -60,102 +60,102 @@ func (s *LogAdapter) log(v ...any) any {
 		fields[fieldName] = fieldValue
 	}
 
-	return s.formatter.Format(&msg, fields)
+	return s.formatter.Format(msg, fields)
 }
 
 func (s *LogAdapter) Fatal(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Fatal(c.log(v...))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Fatal(c.format(v...))
 }
 
 func (s *LogAdapter) Panic(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Panic(c.log(v...))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Panic(c.format(v...))
 }
 
 func (s *LogAdapter) Print(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Print(c.log(v...))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Print(c.format(v...))
 }
 
 func (s *LogAdapter) Fatalf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Fatal(c.log(fmt.Sprintf(format, v...)))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Fatal(c.format(fmt.Sprintf(format, v...)))
 }
 
 func (s *LogAdapter) Panicf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Panic(c.log(fmt.Sprintf(format, v...)))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Panic(c.format(fmt.Sprintf(format, v...)))
 }
 
 func (s *LogAdapter) Printf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
-	c.logger.Print(c.log(fmt.Sprintf(format, v...)))
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
+	c.logger.Print(c.format(fmt.Sprintf(format, v...)))
 }
 
 func (s *LogAdapter) Debug(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelDebug).Print(v...)
 }
 
 func (s *LogAdapter) Info(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelInfo).Print(v...)
 }
 
 func (s *LogAdapter) Notice(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelNotice).Print(v...)
 }
 
 func (s *LogAdapter) Warning(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelWarning).Print(v...)
 }
 
 func (s *LogAdapter) Error(v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelError).Print(v...)
 }
 
 func (s *LogAdapter) Debugf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelDebug).Printf(format, v...)
 }
 
 func (s *LogAdapter) Infof(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelInfo).Printf(format, v...)
 }
 
 func (s *LogAdapter) Noticef(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelNotice).Printf(format, v...)
 }
 
 func (s *LogAdapter) Warningf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelWarning).Printf(format, v...)
 }
 
 func (s *LogAdapter) Errorf(format string, v ...any) {
 	c := s.clone()
-	c.fields = commons.SetCallerInfo(1, false, c.fields)
+	c.fields = commons.SetCallerInfo(1, false, c.fields, logx.FieldNameCallerFunc, logx.FieldNameCallerFile, logx.FieldNameCallerLine)
 	c.WithField(logx.FieldNameLogLevel, logx.LogLevelError).Printf(format, v...)
 }
 
